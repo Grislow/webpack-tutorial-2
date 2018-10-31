@@ -1,11 +1,7 @@
-require("babel-runtime/regenerator")
+require("babel-runtime/regenerator");
+//setups the websocket connection with the client
+//?reload=true -> enables nodemons auto reload
+require("webpack-hot-middleware/client?reload=true");
 require("./main.css");
 require("./index.html");
-
-var a = async (args) => {
-    const { a, b } = args;
-    await console.log('Hello World');
-    console.log('Then this');
-}
-
-a({a: 1, b: 2})
+debugger

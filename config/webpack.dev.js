@@ -1,4 +1,6 @@
 const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     // 3 basic parameters: entry, mode, output
@@ -20,8 +22,14 @@ module.exports = {
         // devserver runs out of the dist directory
         contentBase: 'dist',
         // shows error in browser window
-        overlay: true
+        overlay: true,
+        hot: true,
+        stats: {
+            //styles the output message of the compiler
+            colors: true
+        }
     },
+    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -53,17 +61,6 @@ module.exports = {
                 test: /\.html$/,
                 use: [
                     {
-                        //defines how the extracted file will be named
-                        loader: 'file-loader',
-                        options: {
-                            name: "[name].html"
-                        }
-                    },
-                    {
-                        //extracts to seperate file instead of bundling
-                        loader: 'extract-loader'
-                    },
-                    {
                         //lints html file
                         loader: 'html-loader',
                         options: {
@@ -86,6 +83,13 @@ module.exports = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        //smae as file and extract loader
+        new HtmlWebpackPlugin({
+            template: "./src/index.html"
+        })
+    ]
 
 }
