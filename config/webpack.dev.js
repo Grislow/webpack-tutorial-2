@@ -12,7 +12,7 @@ module.exports = {
         //main: [ 'core-js/fn/promise', './src/main.js' ] -> only pormises
         main: [ './src/main.js' ]
     },
-    mode: 'development',
+    mode: 'development',  
     output: {
         filename: '[name]-bundle.js',
         path: path.resolve(__dirname, '../dist'),
