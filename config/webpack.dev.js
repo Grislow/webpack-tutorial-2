@@ -34,35 +34,22 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" }
-        ]
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          { loader: "postcss-loader" },
-          { loader: "sass-loader" }
-        ]
-      },
-      {
-        test: /\.styl$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          { loader: "postcss-loader" },
-          { loader: "stylus-loader" }
-        ]
-      },
-      {
-        test: /\.less$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          { loader: "postcss-loader" },
-          { loader: "less-loader" }
+          {
+            loader: "style-loader"
+          },
+          { 
+            loader: "css-loader",
+            query: {
+              //enables loading css files as js modules
+              modules: true,
+              //naming convention for class selectors
+              //[name] - name of the containing file
+              //[local] - name of the class
+              //[hash:base64:8] - cache expiry hash
+              //using this option you can automatically genrate BEM syntax classNames
+              localIdentName: '[name]__[local]--[hash:base64:8]'
+            }
+          }
         ]
       },
       {
@@ -71,7 +58,7 @@ module.exports = {
           {
             loader: "file-loader",
             options: {
-              name: "images/[name][hash].[ext]"
+              name: "images/[name].[ext]"
             }
           }
         ]
@@ -83,34 +70,13 @@ module.exports = {
             loader: "html-loader"
           }
         ]
-      },
-      {
-        test: /\.pug$/,
-        use: [
-          {
-            loader: "pug-loader"
-          }
-        ]
-      },
-      {
-        test: /\.hbs$/,
-        use: [
-          {
-            loader: "handlebars-loader",
-            query: {
-              inlineRequires: "/images/"
-            }
-          }
-        ]
       }
     ]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HTMLWebpackPlugin({
-      template: "./src/index.hbs",
-      //here you can include any custom parameters that are then accessible in the template file
-      title: "Link's Journal"
+      template: "./src/index.html"
     })
   ]
 }
