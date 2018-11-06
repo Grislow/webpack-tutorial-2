@@ -1,11 +1,11 @@
 const path = require("path")
 const webpack = require("webpack")
 const HTMLWebpackPlugin = require("html-webpack-plugin")
+const isProd = process.env.NODE_ENV === "production"
 
 module.exports = {
   entry: {
-    main: ["./src/main.js"],
-    ts: ["./src/index.ts"]
+    main: ["./src/main.js"]
   },
   mode: "development",
   output: {
@@ -20,7 +20,6 @@ module.exports = {
       colors: true
     }
   },
-  devtool: "source-map",
   module: {
     rules: [
       {
@@ -33,21 +32,14 @@ module.exports = {
         ]
       },
       {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: "awesome-typescript-loader"
-          }
-        ]
-      },
-      {
         test: /\.css$/,
         use: [
           {
             loader: "style-loader"
           },
-          { loader: "css-loader" }
+          {
+            loader: "css-loader"
+          }
         ]
       },
       {
@@ -72,9 +64,12 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+    //HMR replaced by Heroku
+    // new webpack.HotModuleReplacementPlugin(),
     new HTMLWebpackPlugin({
-      template: "./src/index.html"
+      template: "./src/index.ejs",
+      inject: true,
+      title: "Link's Journal"
     })
   ]
 }
