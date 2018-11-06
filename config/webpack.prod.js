@@ -3,7 +3,8 @@ const webpack = require("webpack")
 const HTMLWebpackPlugin = require("html-webpack-plugin")
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
-const isProd = process.env.NODE_ENV === "production"
+const MinifyPlugin = require('babel-minify-webpack-plugin')
+const UglifyPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -71,6 +72,14 @@ module.exports = {
       template: "./src/index.ejs",
       inject: true,
       title: "Link's Journal"
-    })
+    }),
+    new webpack.DefinePlugin({
+      //allows defining variables as though they where on the process object, below is unnecessary, take NODE_ENV from 'mode' field
+      // "process.env": {
+      //   NODE_ENV: JSON.stringify("production")
+      // }
+    }),
+    // new MinifyPlugin()
+    new UglifyPlugin()
   ]
 }

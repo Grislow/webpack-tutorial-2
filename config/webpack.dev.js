@@ -1,11 +1,15 @@
 const path = require("path")
 const webpack = require("webpack")
 const HTMLWebpackPlugin = require("html-webpack-plugin")
-const isProd = process.env.NODE_ENV === "production"
 
 module.exports = {
   entry: {
-    main: ["./src/main.js"]
+    main: [
+      //You can include preloaded files here instead of in main.js
+      "babel-runtime/regenerator",
+      "webpack-hot-middleware/client?reload=true",
+      "./src/main.js"
+    ]
   },
   mode: "development",
   output: {
@@ -64,8 +68,7 @@ module.exports = {
     ]
   },
   plugins: [
-    //HMR replaced by Heroku
-    // new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new HTMLWebpackPlugin({
       template: "./src/index.ejs",
       inject: true,
