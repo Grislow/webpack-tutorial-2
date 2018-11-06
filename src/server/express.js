@@ -3,9 +3,7 @@ const server = express()
 import path from "path"
 
 const isProd = process.env.NODE_ENV === "production"
-
-//if not in prod run dev middleware
-if(!isProd) {
+if (!isProd) {
   const webpack = require("webpack")
   const config = require("../../config/webpack.dev.js")
   const compiler = webpack(config)
@@ -24,13 +22,18 @@ if(!isProd) {
   server.use(webpackHotMiddlware)
   console.log("Middleware enabled")
 }
+// replaced by gzip
+// const staticMiddleware = express.static("dist")
+// server.use(staticMiddleware)
 
+const expressStaticGzip = require('express-static-gzip')
+server.use(expressStaticGzip("dist", {
+  enableBrotli: true
+}))
 
-const staticMiddleware = express.static("dist")
-server.use(staticMiddleware)
-
-// uses port set by heroku or 8080 for dev
 const PORT = process.env.PORT || 8080
 server.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`)
+  console.log(
+    `Server listening on http://localhost:${PORT} in ${process.env.NODE_ENV}`
+  )
 })

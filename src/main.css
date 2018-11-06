@@ -3,6 +3,10 @@ body {
   background-color: #444;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .profile {
   display: flex;
   -ms-align-items: center;

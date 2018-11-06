@@ -4,12 +4,7 @@ const HTMLWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
   entry: {
-    main: [
-      //You can include preloaded files here instead of in main.js
-      "babel-runtime/regenerator",
-      "webpack-hot-middleware/client?reload=true",
-      "./src/main.js"
-    ]
+    main: ["webpack-hot-middleware/client?reload=true", "./src/main.js"]
   },
   mode: "development",
   output: {
@@ -56,19 +51,16 @@ module.exports = {
             }
           }
         ]
-      },
-      {
-        test: /\.html$/,
-        use: [
-          {
-            loader: "html-loader"
-          }
-        ]
       }
     ]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("development")
+      }
+    }),
     new HTMLWebpackPlugin({
       template: "./src/index.ejs",
       inject: true,

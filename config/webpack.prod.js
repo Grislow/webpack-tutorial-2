@@ -1,10 +1,13 @@
 const path = require("path")
 const webpack = require("webpack")
 const HTMLWebpackPlugin = require("html-webpack-plugin")
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
-const MinifyPlugin = require('babel-minify-webpack-plugin')
-const UglifyPlugin = require('uglifyjs-webpack-plugin')
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const isProd = process.env.NODE_ENV === "production"
+const MiniCSSExtractPlugin = require("mini-css-extract-plugin")
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin")
+const CompressionPlugin = require("compression-webpack-plugin")
+const BrotliPlugin = require("brotli-webpack-plugin")
+
 
 module.exports = {
   entry: {
@@ -35,10 +38,9 @@ module.exports = {
           },
           {
             loader: "css-loader",
-            // Not optimal, only removes whitespace
-            // options: {
-            //   minimize: true
-            // }
+            options: {
+              minimize: true
+            }
           }
         ]
       },
@@ -52,34 +54,32 @@ module.exports = {
             }
           }
         ]
-      },
-      {
-        test: /\.html$/,
-        use: [
-          {
-            loader: "html-loader"
-          }
-        ]
       }
     ]
   },
   plugins: [
-    new OptimizeCSSAssetsPlugin(),
-    new MiniCSSExtractPlugin({
-      filename: "[name]-[contenthash].css"
+    new MiniCSSExtractPlugin(),
+    new OptimizeCssAssetsPlugin({
+      assetNameRegExp: /\.css$/g,
+      cssProcessor: require("cssnano"),
+      cssProcessorOptions: { discardComments: { removeAll: true } },
+      canPrint: true
+    }),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
+      }
     }),
     new HTMLWebpackPlugin({
       template: "./src/index.ejs",
       inject: true,
       title: "Link's Journal"
     }),
-    new webpack.DefinePlugin({
-      //allows defining variables as though they where on the process object, below is unnecessary, take NODE_ENV from 'mode' field
-      // "process.env": {
-      //   NODE_ENV: JSON.stringify("production")
-      // }
+    // new MinifyPlugin(),
+    new UglifyJSPlugin(),
+    new CompressionPlugin({
+      algorithm: "gzip"
     }),
-    // new MinifyPlugin()
-    new UglifyPlugin()
+    new BrotliPlugin()
   ]
 }
