@@ -22,14 +22,13 @@ if (!isProd) {
   server.use(webpackHotMiddlware)
   console.log("Middleware enabled")
 }
-// replaced by gzip
-// const staticMiddleware = express.static("dist")
-// server.use(staticMiddleware)
 
-const expressStaticGzip = require('express-static-gzip')
-server.use(expressStaticGzip("dist", {
-  enableBrotli: true
-}))
+const expressStaticGzip = require("express-static-gzip")
+server.use(
+  expressStaticGzip("dist", {
+    enableBrotli: true
+  })
+)
 
 const PORT = process.env.PORT || 8080
 server.listen(PORT, () => {

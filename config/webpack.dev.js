@@ -4,7 +4,11 @@ const HTMLWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
   entry: {
-    main: ["webpack-hot-middleware/client?reload=true", "./src/main.js"]
+    main: [
+      "babel-runtime/regenerator",
+      "webpack-hot-middleware/client?reload=true",
+      "./src/main.js"
+    ]
   },
   mode: "development",
   output: {
@@ -50,6 +54,22 @@ module.exports = {
               name: "images/[name].[ext]"
             }
           }
+        ]
+      },
+      {
+        test: /\.md$/,
+        use: [
+          {
+            loader: "markdown-with-front-matter-loader"  
+          }
+
+          // THIS WOULD BE OK WITH MD THAT DOESNT USE VARIABLES
+          // {
+          //   loader: "html-loader"
+          // },
+          // {
+          //   loader: "markdown-loader"
+          // }
         ]
       }
     ]
