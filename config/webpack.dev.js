@@ -4,7 +4,8 @@ const HTMLWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
   entry: {
-    main: ["./src/main.js"]
+    main: ["./src/main.js"],
+    ts: ["./src/index.ts"]
   },
   mode: "development",
   output: {
@@ -32,24 +33,21 @@ module.exports = {
         ]
       },
       {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "awesome-typescript-loader"
+          }
+        ]
+      },
+      {
         test: /\.css$/,
         use: [
           {
             loader: "style-loader"
           },
-          { 
-            loader: "css-loader",
-            query: {
-              //enables loading css files as js modules
-              modules: true,
-              //naming convention for class selectors
-              //[name] - name of the containing file
-              //[local] - name of the class
-              //[hash:base64:8] - cache expiry hash
-              //using this option you can automatically genrate BEM syntax classNames
-              localIdentName: '[name]__[local]--[hash:base64:8]'
-            }
-          }
+          { loader: "css-loader" }
         ]
       },
       {
