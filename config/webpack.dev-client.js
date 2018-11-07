@@ -1,6 +1,6 @@
 const path = require("path")
 const webpack = require("webpack")
-const ExtractTextPlugin = require("extract-text-webpack-plugin")
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const HTMLWebpackPlugin = require("html-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 
@@ -17,6 +17,7 @@ module.exports = {
   },
   output: {
     filename: "[name]-bundle.js",
+    chunkFilename: "[name].js",
     path: path.resolve(__dirname, "../dist"),
     publicPath: "/"
   },
@@ -46,19 +47,12 @@ module.exports = {
         test: /\.css$/,
         use: [
           {
-            loader: "style-loader"
+            loader: MiniCSSExtractPlugin.loader
           },
-          { loader: "css-loader" }
+          {
+            loader: "css-loader"
+          }
         ]
-        // use: ExtractTextPlugin.extract({
-        //   fallback: "style-loader",
-        //   use: {
-        //     loader: "css-loader",
-        //     options: {
-        //       minimize: false
-        //     }
-        //   }
-        // })
       },
       {
         test: /\.jpg$/,
@@ -108,8 +102,10 @@ module.exports = {
     ]
   },
   plugins: [
-    // new ExtractTextPlugin("[name].css"),
     new webpack.HotModuleReplacementPlugin(),
+    new MiniCSSExtractPlugin({
+      filename: "main.css"
+    }),
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("development"),

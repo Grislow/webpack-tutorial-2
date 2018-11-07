@@ -1,7 +1,6 @@
 const path = require("path")
 const webpack = require("webpack")
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin")
-// const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const nodeExternals = require("webpack-node-externals")
 
 module.exports = {
@@ -33,16 +32,15 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: "css-loader"
-        // use: ExtractTextPlugin.extract({
-        //   fallback: "style-loader",
-        //   use: {
-        //     loader: "css-loader",
-        //     options: {
-        //       minimize: true
-        //     }
-        //   }
-        // })
+        // use: "css-loader"
+        use: [
+          {
+            loader: MiniCSSExtractPlugin.loader
+          },
+          {
+            loader: "css-loader"
+          }
+        ]
       },
       {
         test: /\.jpg$/,
@@ -76,7 +74,9 @@ module.exports = {
     ]
   },
   plugins: [
-    // new ExtractTextPlugin("[name].css"),
+    new MiniCSSExtractPlugin({
+      filename: "main.css"
+    }),
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("development")
