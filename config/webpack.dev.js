@@ -5,18 +5,21 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPl
 
 module.exports = {
   entry: {
+    vendor: ["react", "react-dom"],
     main: [
       "babel-runtime/regenerator",
       "webpack-hot-middleware/client?reload=true",
       "./src/main.js"
     ]
   },
-  mode: "development",
   output: {
     filename: "[name]-bundle.js",
     path: path.resolve(__dirname, "../dist"),
     publicPath: "/"
   },
+  mode: "development",
+  //tells webpack to run in the browser
+  target: "web",
   devServer: {
     contentBase: "dist",
     overlay: true,
@@ -24,18 +27,7 @@ module.exports = {
       colors: true
     }
   },
-  optimization: {
-    splitChunks: {
-      chunks: "all",
-      cacheGroups: {
-        vendor: {
-          name: "vendor",
-          chunks: "initial",
-          minChunks: 2
-        }
-      }
-    }
-  },
+  devtool: "source-map",
   module: {
     rules: [
       {
@@ -70,6 +62,24 @@ module.exports = {
         ]
       },
       {
+        test: /\.html$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]"
+            }
+          },
+          { loader: "extract-loader" },
+          {
+            loader: "html-loader",
+            options: {
+              attrs: ["img:src"]
+            }
+          }
+        ]
+      },
+      {
         test: /\.md$/,
         use: [
           {
@@ -91,17 +101,20 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("development")
+        NODE_ENV: JSON.stringify("development"),
+        WEBPACK: true
       }
     }),
-    new HTMLWebpackPlugin({
-      template: "./src/index.ejs",
-      inject: true,
-      title: "Link's Journal"
-    }),
-    new BundleAnalyzerPlugin({
-      //generates stats.json in dist that is used by the bundle analyzer
-      generateStatsFile: true
-    })
+    //  THIS IS NOT USED SINCE WE ARE RENDERING SERVER SIDE
+    // new HTMLWebpackPlugin({
+    //   template: "./src/index.ejs",
+    //   inject: true,
+    //   title: "Link's Journal"
+    // }),
+    //  COMMENTING OUT BECAUSE ITS ANNOYING
+    // new BundleAnalyzerPlugin({
+    //   //generates stats.json in dist that is used by the bundle analyzer
+    //   generateStatsFile: true
+    // })
   ]
 }

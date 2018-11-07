@@ -1,38 +1,21 @@
 const path = require("path")
 const webpack = require("webpack")
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin")
-const HTMLWebpackPlugin = require("html-webpack-plugin")
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin")
-const CompressionPlugin = require("compression-webpack-plugin")
-const BrotliPlugin = require("brotli-webpack-plugin")
+const nodeExternals = require("webpack-node-externals")
 
 module.exports = env => {
   return {
     entry: {
-      vendor: ["react", "react-dom"],
-      main: ["./src/main.js"]
+      server: ["./src/server/main.js"]
     },
+    mode: "production",
     output: {
       filename: "[name]-bundle.js",
-      path: path.resolve(__dirname, "../dist"),
-      publicPath: "/"
+      path: path.resolve(__dirname, "../build")
     },
-    target: "web",
-    mode: "production",
-    optimization: {
-      splitChunks: {
-        automaticNameDelimiter: "_",
-        cacheGroups: {
-          vendor: {
-            name: "vendor",
-            test: /[\\/]node_modules[\\/]/,
-            chunks: "initial",
-            minChunks: 2
-          }
-        }
-      }
-    },
+    //tells webpack to run this in node js
+    target: "node",
+    externals: nodeExternals(),
     module: {
       rules: [
         {
@@ -62,7 +45,9 @@ module.exports = env => {
             {
               loader: "file-loader",
               options: {
-                name: "images/[name].[ext]"
+                name: "images/[name].[ext]",
+                //this way the file is not included in the server bundle
+                emitFile: false
               }
             }
           ]
@@ -86,29 +71,11 @@ module.exports = env => {
       ]
     },
     plugins: [
-      new MiniCSSExtractPlugin(),
-      new OptimizeCssAssetsPlugin({
-        assetNameRegExp: /\.css$/g,
-        cssProcessor: require("cssnano"),
-        cssProcessorOptions: { discardComments: { removeAll: true } },
-        canPrint: true
-      }),
       new webpack.DefinePlugin({
         "process.env": {
           NODE_ENV: JSON.stringify(env.NODE_ENV)
         }
-      }),
-      // new HTMLWebpackPlugin({
-      //   template: "./src/index.ejs",
-      //   inject: true,
-      //   title: "Link's Journal",
-      //   chunks: ["vendor", "main"]
-      // }),
-      new UglifyJSPlugin(),
-      new CompressionPlugin({
-        algorithm: "gzip"
-      }),
-      new BrotliPlugin()
+      })
     ]
   }
 }
