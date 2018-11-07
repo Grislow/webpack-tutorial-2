@@ -1,7 +1,7 @@
 const path = require("path")
 const webpack = require("webpack")
 const ExtractTextPlugin = require("extract-text-webpack-plugin")
-// const HTMLWebpackPlugin = require("html-webpack-plugin")
+const HTMLWebpackPlugin = require("html-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 
 module.exports = {
