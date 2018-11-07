@@ -6,7 +6,9 @@ import { AppContainer } from 'react-hot-loader';
 import Data from "../data/bio"
 
 function render(Component){
-    ReactDOM.render(
+    // we are already rendering in render.js
+    // replace render() with hydrate(), this way you get all the events and props without rerendering
+    ReactDOM.hydrate(
         <AppContainer>
             <Component heading={Data.heading} content={Data.bioText}/>
         </AppContainer>,

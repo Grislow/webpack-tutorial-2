@@ -1,9 +1,12 @@
 const path = require("path")
 const webpack = require("webpack")
-const HTMLWebpackPlugin = require("html-webpack-plugin")
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
+// const HTMLWebpackPlugin = require("html-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 
 module.exports = {
+  //informs webpack that this is a build for client side
+  name: "client",
   entry: {
     vendor: ["react", "react-dom"],
     main: [
@@ -45,10 +48,17 @@ module.exports = {
           {
             loader: "style-loader"
           },
-          {
-            loader: "css-loader"
-          }
+          { loader: "css-loader" }
         ]
+        // use: ExtractTextPlugin.extract({
+        //   fallback: "style-loader",
+        //   use: {
+        //     loader: "css-loader",
+        //     options: {
+        //       minimize: false
+        //     }
+        //   }
+        // })
       },
       {
         test: /\.jpg$/,
@@ -98,6 +108,7 @@ module.exports = {
     ]
   },
   plugins: [
+    // new ExtractTextPlugin("[name].css"),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       "process.env": {

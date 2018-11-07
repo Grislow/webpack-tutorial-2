@@ -3,19 +3,17 @@ const webpack = require("webpack")
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin")
 const nodeExternals = require("webpack-node-externals")
 
-module.exports = env => {
-  return {
-    entry: {
-      server: ["./src/server/main.js"]
-    },
-    mode: "production",
-    output: {
-      filename: "[name]-bundle.js",
-      path: path.resolve(__dirname, "../build")
-    },
-    //tells webpack to run this in node js
+module.exports = {
+    name: "server",
     target: "node",
     externals: nodeExternals(),
+    entry: "./src/server/render.js",
+    mode: "production",
+    output: {
+      filename: "prod-server-bundle.js",
+      path: path.resolve(__dirname, "../build"),
+      libraryTarget: "commonjs2"
+    },
     module: {
       rules: [
         {
@@ -73,9 +71,9 @@ module.exports = env => {
     plugins: [
       new webpack.DefinePlugin({
         "process.env": {
-          NODE_ENV: JSON.stringify(env.NODE_ENV)
+          NODE_ENV: JSON.stringify("production")
         }
       })
     ]
   }
-}
+
