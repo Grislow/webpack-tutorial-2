@@ -1,11 +1,12 @@
 const path = require("path")
 const webpack = require("webpack")
-const MiniCSSExtractPlugin = require("mini-css-extract-plugin")
-const HTMLWebpackPlugin = require("html-webpack-plugin")
+// const MiniCSSExtractPlugin = require("mini-css-extract-plugin")
+// const HTMLWebpackPlugin = require("html-webpack-plugin")
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin")
 const CompressionPlugin = require("compression-webpack-plugin")
 const BrotliPlugin = require("brotli-webpack-plugin")
+const ExtractCssChunks = require('extract-css-chunks-webpack-plugin')
 
 module.exports = {
   name: "client",
@@ -47,7 +48,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          { loader: MiniCSSExtractPlugin.loader },
+          { loader: ExtractCssChunks.loader },
           {
             loader: "css-loader",
             options: {
@@ -86,7 +87,12 @@ module.exports = {
     ]
   },
   plugins: [
-    new MiniCSSExtractPlugin(),
+    // No options because we do not ne HMR in prod
+    new ExtractCssChunks(),
+
+    // REPLACED BY CSS CHUNKS
+    // new MiniCSSExtractPlugin(),
+
     new OptimizeCssAssetsPlugin({
       assetNameRegExp: /\.css$/g,
       cssProcessor: require("cssnano"),
@@ -99,12 +105,15 @@ module.exports = {
         WEBPACK: true
       }
     }),
+
+    // NO NEED BECAUSE THESE ARE SERVED SERVER SIDE
     // new HTMLWebpackPlugin({
     //   template: "./src/index.ejs",
     //   inject: true,
     //   title: "Link's Journal",
     //   chunks: ["vendor", "main"]
     // }),
+
     new UglifyJSPlugin(),
     new CompressionPlugin({
       algorithm: "gzip"

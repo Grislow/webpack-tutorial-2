@@ -1,8 +1,9 @@
 const path = require("path")
 const webpack = require("webpack")
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
-const HTMLWebpackPlugin = require("html-webpack-plugin")
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+// const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
+// const HTMLWebpackPlugin = require("html-webpack-plugin")
+// const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+const ExtractCssChunks = require('extract-css-chunks-webpack-plugin')
 
 module.exports = {
   //informs webpack that this is a build for client side
@@ -47,7 +48,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           {
-            loader: MiniCSSExtractPlugin.loader
+            loader:  ExtractCssChunks.loader 
           },
           {
             loader: "css-loader"
@@ -102,22 +103,29 @@ module.exports = {
     ]
   },
   plugins: [
+    //hot: true -> enables hot module reloading in development
+    new ExtractCssChunks({hot: true}),
     new webpack.HotModuleReplacementPlugin(),
-    new MiniCSSExtractPlugin({
-      filename: "main.css"
-    }),
+    
+    // THIS IS REPLACED BY CSS CHUNKS
+    // new MiniCSSExtractPlugin({
+    //   filename: "main.css"
+    // }),
+
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("development"),
         WEBPACK: true
       }
     }),
+    
     //  THIS IS NOT USED SINCE WE ARE RENDERING SERVER SIDE
     // new HTMLWebpackPlugin({
     //   template: "./src/index.ejs",
     //   inject: true,
     //   title: "Link's Journal"
     // }),
+
     //  COMMENTING OUT BECAUSE ITS ANNOYING
     // new BundleAnalyzerPlugin({
     //   //generates stats.json in dist that is used by the bundle analyzer
